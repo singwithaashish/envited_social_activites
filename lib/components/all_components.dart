@@ -53,12 +53,14 @@ class MessageBlueprint {
   final String nameOfSender;
   final String uIdOfSender;
   final String photoLinkOfSender;
+  final DateTime timeOfSending;
   //final Status premiumStatusOfSender;
   MessageBlueprint(
       {required this.messageText,
       required this.nameOfSender,
       required this.photoLinkOfSender,
-      required this.uIdOfSender});
+      required this.uIdOfSender,
+      required this.timeOfSending});
 }
 
 class TemporaryInvite {

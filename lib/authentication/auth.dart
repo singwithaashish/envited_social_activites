@@ -62,17 +62,6 @@ class Authentication extends ChangeNotifier {
                     shortDescription: event.data()['shortDescription'],
                     chatAndUsersCollection:
                         event.data()['chatAndUsersCollection'],
-                    // allMessages: [
-                    //   new MessageBlueprint(
-                    //       messageText: event.data()['allMessages'][0]
-                    //           ['messageText'],
-                    //       nameOfSender: event.data()['allMessages'][0]
-                    //           ['nameOfSender'],
-                    //       photoLinkOfSender: event.data()['allMessages'][0]
-                    //           ['photoLinkOfSender'],
-                    //       uIdOfSender: '')
-                    // ],
-                    // usersGoing: event.data()['usersGoing'],
                     uIDofInviter: event.data()['uIdOfInviter'],
                     imageURL: event.data()['imageURL']),
               );
