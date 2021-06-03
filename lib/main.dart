@@ -3,6 +3,7 @@ import 'package:envited/screens/constants.dart';
 import 'package:envited/screens/home_screen.dart';
 import 'package:envited/screens/location_picker.dart';
 import 'package:envited/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,11 @@ class MainApp extends StatelessWidget {
         // theme: ThemeData(brightness: Brightness.dark),
         color: kThemeColor,
         home:
-            HomeScreen(), //TODO: check if user's signed in and navigate to respective screen
+            Consumer<Authentication>(builder: (context, authentication, child) {
+          return FirebaseAuth.instance.currentUser?.uid != null
+              ? HomeScreen()
+              : LoginScreen();
+        }), //TODO: check if user's signed in and navigate to respective screen
       ),
     );
   }

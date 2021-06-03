@@ -62,7 +62,7 @@ class MapSampleState extends State<MapSample> {
         elevation: 0,
         onPressed: () {
           print(_destination.position);
-          widget.tinv.location = _destination.position.toString();
+          widget.tinv.location = _destination.position;
           Navigator.pop(context);
         },
         label: Text('Add this Location'),

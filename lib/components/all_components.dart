@@ -2,6 +2,8 @@
 
 // import 'dart:html';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class InvitesBlueprint {
   final String title;
   // final Image picture;
@@ -11,7 +13,7 @@ class InvitesBlueprint {
   // late List<UserBlueprint> usersGoing; //gonna be added later
   final String nameOfInviter; //get name
   final String uIDofInviter; //get uid
-  final String location; //get location
+  final LatLng location; //get location
   final String shortDescription;
   final DateTime time;
   //TODO: add Image url and list of users going and messages list
@@ -69,7 +71,7 @@ class TemporaryInvite {
   late String shortDescription;
   late DateTime time;
   late String nameOfInviter;
-  late String location;
+  late LatLng location;
   late String imageurl;
 }
 

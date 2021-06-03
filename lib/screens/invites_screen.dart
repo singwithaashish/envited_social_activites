@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:envited/components/all_components.dart';
 import 'package:envited/screens/messaging_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class InvitesScreen extends StatelessWidget {
   InvitesScreen({required this.invitesBlueprint});
@@ -11,9 +14,100 @@ class InvitesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: MessagingScreen(
-          messageTextEditingController: messageTextEditingController),
-    );
+        appBar: AppBar(actions: [
+          TextButton(
+            onPressed: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return MessagingScreen(
+                        messageTextEditingController:
+                            messageTextEditingController);
+                  });
+            },
+            child: Text(
+              'Discuss',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ]),
+        body: Column(
+          // mainAxisAliglabelnment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  Text(invitesBlueprint.nameOfInviter),
+                  Image.network(invitesBlueprint.imageURL),
+                  Text(
+                    invitesBlueprint.title,
+                    style: TextStyle(fontSize: 30, color: Colors.amber),
+                  ),
+                  Text(invitesBlueprint.shortDescription),
+                  Container(
+                    height: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width,
+                    child: GoogleMap(
+                      markers: {
+                        Marker(
+                            markerId: MarkerId('value'),
+                            position: invitesBlueprint.location),
+                      },
+                      initialCameraPosition: CameraPosition(
+                        target: invitesBlueprint.location,
+                        zoom: 14.4746,
+                      ),
+                    ),
+                  ),
+                  Text('Date & time : ${invitesBlueprint.time}')
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                //TODO:change button's color to green if attending
+                acceptInvite();
+              },
+              // icon: Icon(Icons.check),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                color: Colors.red,
+                child: Center(
+                    child: Text(
+                  'Accept Invite',
+                  style: TextStyle(color: Colors.white),
+                )),
+              ),
+            )
+          ],
+        ));
   }
+}
+
+Future<void> acceptInvite() async {
+  //TODO:check if user is already attending
+
+  var a = await FirebaseFirestore.instance
+      .collection('chatAndUsersCollection')
+      .doc('T32Jqmdq5c1sMWIOeRhj')
+      .collection('AllMessages')
+      .snapshots();
+
+  a.forEach((element) {
+    for (var b in element.docs) {
+      print(b.get('messageText'));
+    }
+  });
+
+  // FirebaseFirestore.instance
+  //     .collection('chatAndUsersCollection')
+  //     .doc('T32Jqmdq5c1sMWIOeRhj')
+  //     .collection('AllAttendees')
+  //     .add({
+  //   'username': FirebaseAuth.instance.currentUser?.displayName,
+  //   'userId': FirebaseAuth.instance.currentUser?.displayName,
+  //   'linkToProfilePhoto': FirebaseAuth.instance.currentUser?.photoURL
+  // });
+  // print('it did something');
 }

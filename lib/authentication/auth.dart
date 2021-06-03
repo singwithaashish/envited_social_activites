@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:images_picker/images_picker.dart';
 
 class Authentication extends ChangeNotifier {
@@ -45,11 +46,7 @@ class Authentication extends ChangeNotifier {
             .snapshots()
             .listen((event) {
           _allInvites = [];
-          FirebaseFirestore.instance
-              .collection('AllInvites')
-              .doc('CdTO4XIuJBiniP92LEOF')
-              .get()
-              .then((value) => print(value['title']));
+
           event.docs.forEach((event) {
             // print(event.data());
             try {
@@ -58,7 +55,8 @@ class Authentication extends ChangeNotifier {
                     title: event.data()['title'],
                     time: event.data()['time'].toDate(),
                     nameOfInviter: event.data()['nameOfInviter'],
-                    location: event.data()['location'],
+                    location: LatLng(event.data()['location'].latitude,
+                        event.data()['location'].longitude),
                     shortDescription: event.data()['shortDescription'],
                     chatAndUsersCollection:
                         event.data()['chatAndUsersCollection'],
@@ -105,21 +103,11 @@ class Authentication extends ChangeNotifier {
           .putFile(File(res![0].path));
       String downloadUrl = await snapshot.ref.getDownloadURL();
 
-      //TODO:make a new entry in the Chats Document and get it's id
       var chatAndUserCollectionId;
       await FirebaseFirestore.instance
           .collection('chatAndUsersCollection')
           .add({
-        'messages': [
-          {
-            'messageText': 'hellow motherfucker',
-            'uIdOfSender': 'idkSomeBodyIGuess',
-            'timeOfSending': DateTime.now(),
-            'UserNameOfSender': 'mr Fuck YOu',
-            'linkToSendersProfile': 'HaventAddedYEt'
-          }
-        ],
-        'AllAttendees': [' ']
+        'metafata': 'hello mister hacker, please leave us in peace. thanks'
       }).then((value) {
         chatAndUserCollectionId = value.id;
       });
@@ -128,7 +116,7 @@ class Authentication extends ChangeNotifier {
         'title': iBP.title,
         'time': DateTime.now(),
         'nameOfInviter': iBP.nameOfInviter,
-        'location': iBP.location,
+        'location': GeoPoint(iBP.location.latitude, iBP.location.longitude),
         'shortDescription': iBP.shortDescription,
         'chatAndUsersCollection': chatAndUserCollectionId, //its and id btw
         'uIdOfInviter': iBP.uIDofInviter,

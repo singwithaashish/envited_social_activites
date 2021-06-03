@@ -25,121 +25,18 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void _showBottomSheet() {
-      showModalBottomSheet(
-          //TODO:wrap with consumer and show an image if done picking
-          elevation: 0,
-          context: context,
-          builder: (context) {
-            return Container(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    customTextField(titC, 'TITLE'), //title picker
-                    customTextField(desC, 'Description'), //description picker
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          //location picker
-                          onPressed: () {
-                            showModalBottomSheet(
-                                enableDrag: false,
-                                // isScrollControlled: false,
-                                context: context,
-                                builder: (context) {
-                                  return MapSample(
-                                    tinv: temporaryInvite,
-                                  );
-                                });
-                          },
-                          icon: Icon(Icons.location_pin),
-                        ),
-                        Container(
-                          //date time picker
-                          width: 20,
-                          height: 20,
-                          child: DateTimePicker(
-                            initialValue: '',
-                            firstDate: DateTime.now(),
-                            icon: Icon(Icons.calendar_today),
-                            lastDate: DateTime.now().add(Duration(days: 7)),
-                            dateLabelText: 'Date',
-                            timeFieldWidth: 50,
-                            type: DateTimePickerType.dateTime,
-                            onChanged: (val) {
-                              print(DateTime.parse(val));
-                              temporaryInvite.time = DateTime.parse(val);
-                            },
-                            validator: (val) {
-                              print('validator $val');
-                              return null;
-                            },
-                            onSaved: (val) => print(val),
-                          ),
-                        ),
-                        IconButton(
-                          //photo picker
-                          onPressed: () async {
-                            //TODO: show a spinner
-                            temporaryInvite.nameOfInviter = FirebaseAuth
-                                    .instance.currentUser!.displayName ??
-                                'Null';
-                            await Provider.of<Authentication>(context,
-                                    listen: false)
-                                .uploadPic();
-                          },
-                          icon: Icon(Icons.photo),
-                        ),
-                      ],
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        InvitesBlueprint ibV = new InvitesBlueprint(
-                            title: titC.text,
-                            time: DateTime.now(),
-                            nameOfInviter: temporaryInvite.nameOfInviter,
-                            location: temporaryInvite.location,
-                            shortDescription: desC.text,
-                            imageURL: 'temporaryInvite.imageurl',
-                            chatAndUsersCollection: ' ',
-                            uIDofInviter:
-                                FirebaseAuth.instance.currentUser?.uid ??
-                                    'null');
-                        Provider.of<Authentication>(context, listen: false)
-                            .addInvites(ibV)
-                            .then((value) {
-                          print(value.id);
-                        });
-                        print('temporaryInvite.location');
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        // width: MediaQuery.of(context).size.width / 2,
-                        color: Colors.blue,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 10,
-                          ),
-                          child: Text(
-                            'UPLOAD',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
-          });
-    }
-
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text('ENVITED'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Provider.of<Authentication>(context, listen: false).signOut();
+              },
+              icon: Icon(Icons.logout))
+        ],
+      ),
       body: Consumer<Authentication>(
         builder: (context, value, child) {
           // print(value.allInvites);
@@ -173,11 +70,125 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showBottomSheet();
+          _showBottomSheet(context, temporaryInvite, titC, desC);
         },
       ),
     );
   }
+}
+
+void _showBottomSheet(BuildContext context, TemporaryInvite temporaryInvite,
+    TextEditingController titC, TextEditingController desC) {
+  showModalBottomSheet(
+      //TODO:wrap with consumer and show an image if done picking
+      elevation: 0,
+      context: context,
+      builder: (context) {
+        return Container(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                customTextField(titC, 'TITLE'), //title picker
+                customTextField(desC, 'Description'), //description picker
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      //location picker
+                      onPressed: () {
+                        showModalBottomSheet(
+                            enableDrag: false,
+                            // isScrollControlled: false,
+                            context: context,
+                            builder: (context) {
+                              return MapSample(
+                                tinv: temporaryInvite,
+                              );
+                            });
+                      },
+                      icon: Icon(Icons.location_pin),
+                    ),
+                    Container(
+                      //date time picker
+                      width: 20,
+                      height: 20,
+                      child: DateTimePicker(
+                        initialValue: '',
+                        firstDate: DateTime.now(),
+                        icon: Icon(Icons.calendar_today),
+                        lastDate: DateTime.now().add(Duration(days: 7)),
+                        dateLabelText: 'Date',
+                        timeFieldWidth: 50,
+                        type: DateTimePickerType.dateTime,
+                        onChanged: (val) {
+                          print(DateTime.parse(val));
+                          temporaryInvite.time = DateTime.parse(val);
+                        },
+                        validator: (val) {
+                          print('validator $val');
+                          return null;
+                        },
+                        onSaved: (val) => print(val),
+                      ),
+                    ),
+                    IconButton(
+                      //photo picker
+                      onPressed: () async {
+                        //TODO: show a spinner
+                        temporaryInvite.nameOfInviter =
+                            FirebaseAuth.instance.currentUser!.displayName ??
+                                'Null';
+                        await Provider.of<Authentication>(context,
+                                listen: false)
+                            .uploadPic();
+                      },
+                      icon: Icon(Icons.photo),
+                    ),
+                  ],
+                ),
+                TextButton(
+                  onPressed: () {
+                    InvitesBlueprint ibV = new InvitesBlueprint(
+                        title: titC.text,
+                        time: DateTime.now(),
+                        nameOfInviter: temporaryInvite.nameOfInviter,
+                        location: temporaryInvite.location,
+                        shortDescription: desC.text,
+                        imageURL: 'temporaryInvite.imageurl',
+                        chatAndUsersCollection: ' ',
+                        uIDofInviter:
+                            FirebaseAuth.instance.currentUser?.uid ?? 'null');
+                    Provider.of<Authentication>(context, listen: false)
+                        .addInvites(ibV)
+                        .then((value) {
+                      print(value.id);
+                    });
+                    print('temporaryInvite.location');
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    // width: MediaQuery.of(context).size.width / 2,
+                    color: Colors.blue,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 10,
+                      ),
+                      child: Text(
+                        'UPLOAD',
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      });
 }
 
 Widget inviteView(InvitesBlueprint ivB) {
@@ -223,7 +234,7 @@ Widget inviteView(InvitesBlueprint ivB) {
                               children: [
                                 Icon(Icons.location_city_outlined),
                                 Text(
-                                  ivB.location,
+                                  ivB.location.toString(),
                                   overflow: TextOverflow.ellipsis,
                                 )
                               ],
