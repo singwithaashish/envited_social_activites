@@ -86,7 +86,7 @@ Container customButtonStyle() {
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(50),
-      gradient: LinearGradient(colors: [Colors.blue, Colors.cyan]),
+      gradient: LinearGradient(colors: [Colors.red, Colors.cyan]),
     ),
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),

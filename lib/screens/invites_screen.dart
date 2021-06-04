@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:envited/components/all_components.dart';
+import 'package:envited/screens/constants.dart';
 import 'package:envited/screens/messaging_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,7 +16,7 @@ class InvitesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(actions: [
+        appBar: AppBar(backgroundColor: kThemeColor, actions: [
           TextButton(
             onPressed: () {
               showModalBottomSheet(
@@ -38,7 +40,9 @@ class InvitesScreen extends StatelessWidget {
               child: ListView(
                 children: [
                   Text(invitesBlueprint.nameOfInviter),
-                  Image.network(invitesBlueprint.imageURL),
+                  Hero(
+                      tag: 'tag',
+                      child: Image.network(invitesBlueprint.imageURL)),
                   Text(
                     invitesBlueprint.title,
                     style: TextStyle(fontSize: 30, color: Colors.amber),
@@ -88,26 +92,23 @@ class InvitesScreen extends StatelessWidget {
 Future<void> acceptInvite() async {
   //TODO:check if user is already attending
 
-  var a = await FirebaseFirestore.instance
-      .collection('chatAndUsersCollection')
-      .doc('T32Jqmdq5c1sMWIOeRhj')
-      .collection('AllMessages')
-      .snapshots();
-
-  a.forEach((element) {
-    for (var b in element.docs) {
-      print(b.get('messageText'));
-    }
-  });
-
-  // FirebaseFirestore.instance
+  // var a = FirebaseFirestore.instance
   //     .collection('chatAndUsersCollection')
   //     .doc('T32Jqmdq5c1sMWIOeRhj')
-  //     .collection('AllAttendees')
-  //     .add({
-  //   'username': FirebaseAuth.instance.currentUser?.displayName,
-  //   'userId': FirebaseAuth.instance.currentUser?.displayName,
-  //   'linkToProfilePhoto': FirebaseAuth.instance.currentUser?.photoURL
-  // });
-  // print('it did something');
+  //     .collection('AllMessages')
+  //     .snapshots();
+
+  // var c = FirebaseStorage.instance
+  //     .ref('chatAndUsersCollection/T32Jqmdq5c1sMWIOeRhj/AllMessages');
+
+  // print(c.getData());
+
+  FirebaseFirestore.instance
+      .collection('chatAndUsersCollection')
+      .doc('T32Jqmdq5c1sMWIOeRhj')
+      .collection('AllAttendees')
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .set({'timeOfJoin': DateTime.now(), 'wasInvited': false}).onError(
+          (error, stackTrace) => print(error));
+  print('it did something');
 }

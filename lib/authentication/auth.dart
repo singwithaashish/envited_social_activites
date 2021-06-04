@@ -107,7 +107,7 @@ class Authentication extends ChangeNotifier {
       await FirebaseFirestore.instance
           .collection('chatAndUsersCollection')
           .add({
-        'metafata': 'hello mister hacker, please leave us in peace. thanks'
+        'timeCreated': DateTime.now(),
       }).then((value) {
         chatAndUserCollectionId = value.id;
       });

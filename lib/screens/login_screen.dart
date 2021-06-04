@@ -19,29 +19,22 @@ class LoginScreen extends StatelessWidget {
           style: TextStyle(color: kTextColor),
         ),
         elevation: 0,
-        backgroundColor: kBackgroundColor,
+        backgroundColor: kThemeColor,
       ),
-      body: Stack(
-        children: [
-          ListView(children: [
-            Image.asset('assets/resort_1.jpeg'),
-            Image.asset('assets/resort_2.jpeg'),
-            Image.asset('assets/resort_3.jpeg'),
-            Image.asset('assets/resort_4.jpeg'),
-          ]),
-          ListView(
-            children: [
-              SizedBox(
-                height: screenSize.height / 3,
-              ),
-              Consumer<Authentication>(builder: (context, authentication, _) {
-                return Column(children: [
-                  loginPhase(authentication, context),
-                ]);
-              }),
-            ],
-          )
-        ],
+      body: Container(
+        color: kThemeColor,
+        child: ListView(
+          children: [
+            SizedBox(
+              height: screenSize.height / 3,
+            ),
+            Consumer<Authentication>(builder: (context, authentication, _) {
+              return Column(children: [
+                loginPhase(authentication, context),
+              ]);
+            }),
+          ],
+        ),
       ),
     );
   }

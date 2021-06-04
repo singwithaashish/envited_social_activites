@@ -2,6 +2,7 @@ import 'package:envited/authentication/auth.dart';
 import 'package:envited/components/all_components.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:envited/components/methods.dart';
+import 'package:envited/screens/constants.dart';
 import 'package:envited/screens/invites_screen.dart';
 import 'package:envited/screens/location_picker.dart';
 import 'package:envited/widgets/login_widgets.dart';
@@ -28,6 +29,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: kThemeColor,
         title: Text('ENVITED'),
         actions: [
           IconButton(
@@ -42,15 +44,7 @@ class HomeScreen extends StatelessWidget {
           // print(value.allInvites);
 
           return value.allInvites != []
-              ?
-              // ? SingleChildScrollView(
-              //     child:
-              //       // Text('AllInvites: '),
-              //       for(var inv in value.allInvites)
-              //        inviteView(inv),
-
-              //   )
-              ListView.builder(
+              ? ListView.builder(
                   itemCount: value.allInvites.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
@@ -199,69 +193,73 @@ Widget inviteView(InvitesBlueprint ivB) {
         border: Border.all(color: Colors.red, width: 2),
         borderRadius: BorderRadius.circular(5),
       ),
-      child: Stack(alignment: AlignmentDirectional.bottomStart, children: [
-        Image.network(ivB.imageURL),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Container(
-            // padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                color: Colors.cyanAccent,
-                borderRadius: BorderRadius.circular(20)),
-            child: Column(
-              children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(
+      child: Column(children: [
+        Hero(
+            tag: 'tag',
+            child: Container(
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(200)),
+              child: Image.network(
+                ivB.imageURL,
+                fit: BoxFit.contain,
+              ),
+            )),
+        Container(
+          // padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(color: kThemeColor),
+          child: Column(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.person),
+                        Text(
+                          ivB.nameOfInviter,
+                          style: TextStyle(fontSize: 20),
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.person),
-                          Text(
-                            ivB.nameOfInviter,
-                            style: TextStyle(fontSize: 20),
-                            overflow: TextOverflow.ellipsis,
-                          )
+                          Row(
+                            children: [
+                              Icon(Icons.location_city_outlined),
+                              Text(
+                                ivB.location.toString(),
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.lock_clock),
+                              Text(ivB.time.toString(),
+                                  overflow: TextOverflow.fade)
+                            ],
+                          ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.location_city_outlined),
-                                Text(
-                                  ivB.location.toString(),
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(Icons.lock_clock),
-                                Text(ivB.time.toString(),
-                                    overflow: TextOverflow.fade)
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-                Text(
-                  ivB.title,
-                  style: TextStyle(fontSize: 25, color: Colors.red),
-                ),
-                Text(
-                  ivB.shortDescription,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ),
+              ),
+              Text(
+                ivB.title,
+                style: TextStyle(fontSize: 25, color: Colors.red),
+              ),
+              Text(
+                ivB.shortDescription,
+                overflow: TextOverflow.ellipsis,
+              )
+            ],
           ),
         ),
       ]),

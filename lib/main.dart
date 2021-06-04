@@ -26,9 +26,10 @@ class MainApp extends StatelessWidget {
         color: kThemeColor,
         home:
             Consumer<Authentication>(builder: (context, authentication, child) {
-          return FirebaseAuth.instance.currentUser?.uid != null
-              ? HomeScreen()
-              : LoginScreen();
+          // print(FirebaseAuth.instance.currentUser!.displayName);
+          // return LoginScreen();
+          var user = FirebaseAuth.instance.currentUser;
+          return user != null ? HomeScreen() : LoginScreen();
         }), //TODO: check if user's signed in and navigate to respective screen
       ),
     );
