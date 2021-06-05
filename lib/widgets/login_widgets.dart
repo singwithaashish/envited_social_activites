@@ -22,77 +22,84 @@ import 'package:provider/provider.dart';
 
 // }
 
-Widget loginPhase(Authentication authentication, BuildContext context) {
-  final TextEditingController eC = new TextEditingController(),
-      pwC = new TextEditingController(),
-      unC = new TextEditingController();
+// Widget loginPhase(Authentication authentication, BuildContext context) {
+//   final TextEditingController eC = new TextEditingController(),
+//       pwC = new TextEditingController(),
+//       unC = new TextEditingController();
 
-  switch (authentication.loginState) {
-    case ApplicationLoginState.emailAddress:
-      // eC.clear();
-      return Column(
-        children: [
-          customTextField(eC, 'Email'),
-          TextButton(
-            onPressed: () {
-              print('GIVEN EMAIL: ${eC.text}');
-              // authentication.memail = eC.text;
-              authentication.verifyEmail(eC.text);
-            },
-            child: customButtonStyle(),
+//   switch (authentication.loginState) {
+//     case ApplicationLoginState.emailAddress:
+//       // eC.clear();
+//       return Column(
+//         children: [
+//           customTextField(eC, 'Email'),
+//           TextButton(
+//             onPressed: () {
+//               print('GIVEN EMAIL: ${eC.text}');
+//               // authentication.memail = eC.text;
+//               authentication.verifyEmail(eC.text);
+//             },
+//             child: customButtonStyle(),
+//           ),
+//           // IconButton(
+//           //     onPressed: () {
+//           //       print('GIVEN EMAIL: ${eC.text}');
+//           //       // authentication.memail = eC.text;
+//           //       authentication.verifyEmail(eC.text);
+//           //     },
+//           //     icon: Icon(Icons.arrow_right_rounded))
+//         ],
+//       );
+//     case ApplicationLoginState.password:
+//       return Column(
+//         children: [
+//           customTextField(pwC, 'Password'),
+//           TextButton(
+//             onPressed: () {
+//               authentication.signInWithEmailAndPassword(
+//                   eC.text, pwC.text, context);
+//             },
+//             child: customButtonStyle(),
+//           )
+//         ],
+//       );
+//     case ApplicationLoginState.register:
+//       return Column(
+//         children: [
+//           customTextField(unC, 'Username'), //username
+//           customTextField(pwC, 'Password'), //password
+//           // TextField(), //reenter password
+//           TextButton(
+//             onPressed: () {
+//               print(eC.text);
+//               authentication.registerAccount(
+//                   eC.text, unC.text, pwC.text, context);
+//             },
+//             child: customButtonStyle(),
+//           )
+//         ],
+//       );
+//   }
+// }
+
+TextButton customButtonStyle(String text, var onPress) {
+  return TextButton(
+    onPressed: onPress,
+    child: Container(
+      // width: 150,
+      // height: 40,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        gradient: LinearGradient(colors: [Colors.red, Colors.cyan]),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            text,
+            style: TextStyle(color: kTextColor, fontSize: 20),
           ),
-          // IconButton(
-          //     onPressed: () {
-          //       print('GIVEN EMAIL: ${eC.text}');
-          //       // authentication.memail = eC.text;
-          //       authentication.verifyEmail(eC.text);
-          //     },
-          //     icon: Icon(Icons.arrow_right_rounded))
-        ],
-      );
-    case ApplicationLoginState.password:
-      return Column(
-        children: [
-          customTextField(pwC, 'Password'),
-          TextButton(
-            onPressed: () {
-              authentication.signInWithEmailAndPassword(
-                  eC.text, pwC.text, context);
-            },
-            child: customButtonStyle(),
-          )
-        ],
-      );
-    case ApplicationLoginState.register:
-      return Column(
-        children: [
-          customTextField(unC, 'Username'), //username
-          customTextField(pwC, 'Password'), //password
-          // TextField(), //reenter password
-          TextButton(
-            onPressed: () {
-              print(eC.text);
-              authentication.registerAccount(
-                  eC.text, unC.text, pwC.text, context);
-            },
-            child: customButtonStyle(),
-          )
-        ],
-      );
-  }
-}
-
-Container customButtonStyle() {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(50),
-      gradient: LinearGradient(colors: [Colors.red, Colors.cyan]),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
-      child: Text(
-        'Next',
-        style: TextStyle(color: kTextColor, fontSize: 20),
+        ),
       ),
     ),
   );

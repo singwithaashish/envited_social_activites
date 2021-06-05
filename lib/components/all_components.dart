@@ -16,6 +16,7 @@ class InvitesBlueprint {
   final LatLng location; //get location
   final String shortDescription;
   final DateTime time;
+  final bool isPrivate;
   //TODO: add Image url and list of users going and messages list
 
   InvitesBlueprint(
@@ -26,21 +27,54 @@ class InvitesBlueprint {
       required this.shortDescription,
       required this.chatAndUsersCollection,
       required this.uIDofInviter,
-      required this.imageURL});
+      required this.imageURL,
+      required this.isPrivate});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'time': time,
+      'nameOfInviter': nameOfInviter,
+      'location': location,
+      'shortDescription': shortDescription,
+      'chatAndUsersCollection': chatAndUsersCollection,
+      'uIDofInviter': uIDofInviter,
+      'imageURL': imageURL,
+      'isPrivate': isPrivate
+    };
+  }
 }
 
 class UserBlueprint {
-  final String username;
-  final String userId;
+  final String firstName;
+  final String lastName;
+  final bool isFemale;
+  late List<String> idsOfInviteAttended;
+  final DateTime dob;
+
   final String linkToProfilePhoto;
   // final List<InvitesBlueprint> allInvitesAttended; //add it to firebaseuser instead
-  final Status premiumStatus;
+  final bool isPremium;
 
   UserBlueprint(
-      {required this.username,
-      required this.userId,
+      {required this.firstName,
+      required this.lastName,
       required this.linkToProfilePhoto,
-      required this.premiumStatus});
+      required this.isFemale,
+      required this.isPremium,
+      required this.dob,
+      required this.idsOfInviteAttended});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'linkToProfilePhoto': linkToProfilePhoto,
+      'isFemale': isFemale,
+      'isPremium': isPremium,
+      'dob': dob
+    };
+  }
 }
 
 enum Status {

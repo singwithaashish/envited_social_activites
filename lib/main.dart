@@ -29,7 +29,11 @@ class MainApp extends StatelessWidget {
           // print(FirebaseAuth.instance.currentUser!.displayName);
           // return LoginScreen();
           var user = FirebaseAuth.instance.currentUser;
-          return user != null ? HomeScreen() : LoginScreen();
+          return user != null
+              ? HomeScreen()
+              : SignUpScreen(
+                  authentication: authentication,
+                );
         }), //TODO: check if user's signed in and navigate to respective screen
       ),
     );

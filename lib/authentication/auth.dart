@@ -61,7 +61,8 @@ class Authentication extends ChangeNotifier {
                     chatAndUsersCollection:
                         event.data()['chatAndUsersCollection'],
                     uIDofInviter: event.data()['uIdOfInviter'],
-                    imageURL: event.data()['imageURL']),
+                    imageURL: event.data()['imageURL'],
+                    isPrivate: event.data()['isPrivate']),
               );
             } catch (e) {
               print(e);
@@ -110,7 +111,11 @@ class Authentication extends ChangeNotifier {
         'timeCreated': DateTime.now(),
       }).then((value) {
         chatAndUserCollectionId = value.id;
-      });
+      }); //get the chat and collection uid to store in all invites for refrence
+
+      // return FirebaseFirestore.instance
+      //     .collection('AllInvites')
+      //     .add(iBP.toJson());
 
       return FirebaseFirestore.instance.collection('AllInvites').add({
         'title': iBP.title,
@@ -120,7 +125,8 @@ class Authentication extends ChangeNotifier {
         'shortDescription': iBP.shortDescription,
         'chatAndUsersCollection': chatAndUserCollectionId, //its and id btw
         'uIdOfInviter': iBP.uIDofInviter,
-        'imageURL': downloadUrl
+        'imageURL': downloadUrl,
+        'isPrivate': iBP.isPrivate
       });
     } else {
       throw Exception('Login first');
@@ -145,18 +151,17 @@ class Authentication extends ChangeNotifier {
     notifyListeners();
   }
 
-  void registerAccount(String email, String displayName, String password,
-      BuildContext context) async {
+  Future<void> registerAccount(
+      String email, String displayName, String password) async {
     try {
       var credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: _email, password: password);
       await credential.user!.updateProfile(displayName: displayName);
-      changeScreen(HomeScreen(), context);
+      // changeScreen(HomeScreen(), context);
     } on FirebaseAuthException catch (e) {
       print('ERROR ON LINE 94 BUDDY : $e');
-      //TODO:make a AlertDialouge
+      //TODO:make an AlertDialouge
     }
-    notifyListeners();
   }
 
   void signInWithEmailAndPassword(
@@ -173,6 +178,44 @@ class Authentication extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       print(e);
     }
+    notifyListeners();
+  }
+
+  Future<void> createNewUser(String email, String password, String firstName,
+      String lastName, DateTime dob, bool isFemale) async {
+    //create new user
+    try {
+      var credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: _email, password: password);
+      await credential.user!.updateProfile(displayName: firstName);
+      // changeScreen(HomeScreen(), context);
+    } on FirebaseAuthException catch (e) {
+      print('ERROR ON LINE 94 BUDDY : $e');
+      //TODO:make an AlertDialouge
+    }
+    //upload an image and get url
+    var snapshot = await _storage
+        .ref()
+        .child(
+            'UsersProfilePics/${FirebaseAuth.instance.currentUser!.uid.toString()}')
+        .putFile(File(res![0].path));
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    //get uid and create new doc with that id under all user
+    await FirebaseFirestore.instance
+        .collection('AllUsers')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .set({
+      'firstName': firstName,
+      'lastName': lastName,
+      'linkToProfilePhoto': downloadUrl,
+      'isFemale': isFemale,
+      'isPremium': false,
+      'dob': dob,
+      'email': FirebaseAuth.instance.currentUser!.email,
+      'peerRating': 0,
+      'attendingRatio': 0,
+      'idsOfInviteAttended': [],
+    }).onError((error, stackTrace) => print(error));
     notifyListeners();
   }
 

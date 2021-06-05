@@ -90,19 +90,8 @@ class InvitesScreen extends StatelessWidget {
 }
 
 Future<void> acceptInvite() async {
-  //TODO:check if user is already attending
-
-  // var a = FirebaseFirestore.instance
-  //     .collection('chatAndUsersCollection')
-  //     .doc('T32Jqmdq5c1sMWIOeRhj')
-  //     .collection('AllMessages')
-  //     .snapshots();
-
-  // var c = FirebaseStorage.instance
-  //     .ref('chatAndUsersCollection/T32Jqmdq5c1sMWIOeRhj/AllMessages');
-
-  // print(c.getData());
-
+  //TODO:check if user is already attending and change state of accept invite or leave
+  print(await hasUserJoined());
   FirebaseFirestore.instance
       .collection('chatAndUsersCollection')
       .doc('T32Jqmdq5c1sMWIOeRhj')
@@ -111,4 +100,27 @@ Future<void> acceptInvite() async {
       .set({'timeOfJoin': DateTime.now(), 'wasInvited': false}).onError(
           (error, stackTrace) => print(error));
   print('it did something');
+}
+
+Future<bool> hasUserJoined() async {
+  bool huh = false;
+
+  FirebaseFirestore.instance
+      .collection('chatAndUsersCollection')
+      .doc('T32Jqmdq5c1sMWIOeRhj')
+      .collection('AllAttendees')
+      // .doc('GGbBJY8nLQBUERvhD0G4')
+      .snapshots()
+      .listen((event) {
+    event.docs.forEach((element) {
+      // print(element.id);
+      if (element.id == FirebaseAuth.instance.currentUser!.uid) {
+        huh = true;
+      }
+    });
+    // doneChecking = true;
+  });
+
+  await Future.delayed(Duration(seconds: 1));
+  return huh;
 }

@@ -152,6 +152,7 @@ void _showBottomSheet(BuildContext context, TemporaryInvite temporaryInvite,
                         shortDescription: desC.text,
                         imageURL: 'temporaryInvite.imageurl',
                         chatAndUsersCollection: ' ',
+                        isPrivate: false,
                         uIDofInviter:
                             FirebaseAuth.instance.currentUser?.uid ?? 'null');
                     Provider.of<Authentication>(context, listen: false)
