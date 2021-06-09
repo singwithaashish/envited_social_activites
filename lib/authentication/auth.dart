@@ -23,6 +23,8 @@ class Authentication extends ChangeNotifier {
   List<InvitesBlueprint> _allInvites = [];
   List<InvitesBlueprint> get allInvites => _allInvites;
 
+  String myId = '';
+
   StreamSubscription<QuerySnapshot>? _listSubscription;
   StreamSubscription<QuerySnapshot>? chatSubscription;
 
@@ -35,12 +37,13 @@ class Authentication extends ChangeNotifier {
 
   //get and listen to changes in AllInvites collection
   Future<void> initialize() async {
-    // WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     FirebaseAuth.instance.userChanges().listen((user) {
       //if logged in or out, this will be called
 
       if (FirebaseAuth.instance.currentUser?.uid != null) {
+        myId = FirebaseAuth.instance.currentUser?.uid ?? '';
         _listSubscription = FirebaseFirestore.instance
             .collection('AllInvites')
             .snapshots()
@@ -50,20 +53,19 @@ class Authentication extends ChangeNotifier {
           event.docs.forEach((event) {
             // print(event.data());
             try {
-              _allInvites.add(
-                InvitesBlueprint(
-                    title: event.data()['title'],
-                    time: event.data()['time'].toDate(),
-                    nameOfInviter: event.data()['nameOfInviter'],
-                    location: LatLng(event.data()['location'].latitude,
-                        event.data()['location'].longitude),
-                    shortDescription: event.data()['shortDescription'],
-                    chatAndUsersCollection:
-                        event.data()['chatAndUsersCollection'],
-                    uIDofInviter: event.data()['uIdOfInviter'],
-                    imageURL: event.data()['imageURL'],
-                    isPrivate: event.data()['isPrivate']),
-              );
+              _allInvites.add(InvitesBlueprint(
+                title: event.data()['title'],
+                time: event.data()['time'].toDate(),
+                nameOfInviter: event.data()['nameOfInviter'],
+                location: LatLng(event.data()['location'].latitude,
+                    event.data()['location'].longitude),
+                shortDescription: event.data()['shortDescription'],
+                chatAndUsersCollection: event.data()['chatAndUsersCollection'],
+                uIDofInviter: event.data()['uIdOfInviter'],
+                imageURL: event.data()['imageURL'],
+                isPrivate: false,
+              ) //event.data()['isPrivate']),
+                  );
             } catch (e) {
               print(e);
             }
@@ -91,6 +93,17 @@ class Authentication extends ChangeNotifier {
       count: 1,
       pickType: PickType.image,
     );
+  }
+
+  Future<void> getUserBlueprint() async {
+    myId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    print(myId);
+    var whatever = await FirebaseFirestore.instance
+        .collection('AllUsers')
+        .doc('9m1qb7IZfISYsKTG9GLiZ8tRWHP2')
+        .get();
+    print(whatever.data()!['firstName']);
+    // return user;
   }
 
   //pass a InvitesBlueprint to add it to the database
@@ -167,14 +180,14 @@ class Authentication extends ChangeNotifier {
   void signInWithEmailAndPassword(
       //this gets you in
       String email,
-      String password,
-      BuildContext context) async {
+      String password) async {
+    print('beep boop');
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _email,
+        email: email,
         password: password,
       );
-      changeScreen(HomeScreen(), context);
+      // changeScreen(HomeScreen(), context);
     } on FirebaseAuthException catch (e) {
       print(e);
     }
@@ -186,7 +199,7 @@ class Authentication extends ChangeNotifier {
     //create new user
     try {
       var credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: _email, password: password);
+          .createUserWithEmailAndPassword(email: email, password: password);
       await credential.user!.updateProfile(displayName: firstName);
       // changeScreen(HomeScreen(), context);
     } on FirebaseAuthException catch (e) {

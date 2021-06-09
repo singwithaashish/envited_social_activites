@@ -60,10 +60,14 @@ class LoginScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 TextButton(
-                    onPressed: () {}, child: customButtonStyle('login', () {})),
+                    onPressed: () {
+                      print("atleast im trying");
+                      Provider.of<Authentication>(context, listen: false)
+                          .signInWithEmailAndPassword(eC.text, pwC.text);
+                    },
+                    child: customButtonStyle('login fuck')),
                 TextButton(
-                    onPressed: () {},
-                    child: customButtonStyle('Sign Up', () {})),
+                    onPressed: () {}, child: customButtonStyle('Sign Up')),
               ],
             ),
 
@@ -86,7 +90,7 @@ class LoginScreen extends StatelessWidget {
                 )
               ],
             ),
-            customButtonStyle('Sign in with Google', () {}),
+            customButtonStyle('Sign in with Google'),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -143,28 +147,23 @@ class SignUpScreen extends StatelessWidget {
             customTextField(lastNameC, 'Last name'),
             customTextField(pwC, 'Password'),
             customTextField(rePwC, 'Confirm Password'),
-            Container(
-              //date time picker
-              width: 20,
-              height: 20,
-              child: DateTimePicker(
-                initialValue: '',
-                firstDate: DateTime.now().subtract(Duration(days: 26000)),
-                icon: Icon(Icons.calendar_today),
-                lastDate: DateTime.now(),
-                dateLabelText: 'Date',
-                timeFieldWidth: 50,
-                type: DateTimePickerType.date,
-                onChanged: (val) {
-                  // print(DateTime.parse(val));
-                  dob = DateTime.parse(val);
-                },
-                validator: (val) {
-                  print('validator $val');
-                  return null;
-                },
-                onSaved: (val) => print(val),
-              ),
+            DateTimePicker(
+              initialValue: 'Enter your happy bday',
+              firstDate: DateTime.now().subtract(Duration(days: 26000)),
+              icon: Icon(Icons.calendar_today),
+              lastDate: DateTime.now(),
+              dateLabelText: 'Date',
+              timeFieldWidth: 50,
+              type: DateTimePickerType.date,
+              onChanged: (val) {
+                print(DateTime.parse(val));
+                dob = DateTime.parse(val);
+              },
+              validator: (val) {
+                print('validator $val');
+                return null;
+              },
+              onSaved: (val) => print(val),
             ),
             IconButton(
                 onPressed: () async {
@@ -187,11 +186,13 @@ class SignUpScreen extends StatelessWidget {
             // ]),
             // TextButton(onPressed: () {}, child: Text('forgot password?')),
             TextButton(
-                onPressed: () {},
-                child: customButtonStyle('Sign Up', () {
-                  authentication.createNewUser(eC.text, pwC.text,
-                      firstNameC.text, lastNameC.text, dob, false);
-                })),
+                onPressed: () {
+                  Provider.of<Authentication>(context, listen: false)
+                      .createNewUser(eC.text, pwC.text, firstNameC.text,
+                          lastNameC.text, DateTime.now(), false);
+                  // print(dob);
+                },
+                child: Text('sign up')),
             Row(
               children: [
                 Expanded(
@@ -211,7 +212,7 @@ class SignUpScreen extends StatelessWidget {
                 )
               ],
             ),
-            customButtonStyle('Sign in with Google', () {}),
+            customButtonStyle('Sign in with Google'),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

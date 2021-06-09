@@ -51,7 +51,8 @@ class UserBlueprint {
   final bool isFemale;
   late List<String> idsOfInviteAttended;
   final DateTime dob;
-
+  final int inviteAttendanceRate;
+  final int peerReview;
   final String linkToProfilePhoto;
   // final List<InvitesBlueprint> allInvitesAttended; //add it to firebaseuser instead
   final bool isPremium;
@@ -62,6 +63,8 @@ class UserBlueprint {
       required this.linkToProfilePhoto,
       required this.isFemale,
       required this.isPremium,
+      required this.inviteAttendanceRate,
+      required this.peerReview,
       required this.dob,
       required this.idsOfInviteAttended});
 

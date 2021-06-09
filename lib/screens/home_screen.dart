@@ -5,6 +5,7 @@ import 'package:envited/components/methods.dart';
 import 'package:envited/screens/constants.dart';
 import 'package:envited/screens/invites_screen.dart';
 import 'package:envited/screens/location_picker.dart';
+import 'package:envited/screens/profile_screen.dart';
 import 'package:envited/widgets/login_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
@@ -14,15 +15,18 @@ import 'package:images_picker/images_picker.dart';
 
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController titC = new TextEditingController(),
       desC = new TextEditingController();
+
   final TemporaryInvite temporaryInvite = new TemporaryInvite();
-  //its a list
-
-  // Future getImage() async {
-
-  // }
+  int selectedIndex = 0;
+  final tabs = [HomeWidget(), ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -39,34 +43,58 @@ class HomeScreen extends StatelessWidget {
               icon: Icon(Icons.logout))
         ],
       ),
-      body: Consumer<Authentication>(
-        builder: (context, value, child) {
-          // print(value.allInvites);
-
-          return value.allInvites != []
-              ? ListView.builder(
-                  itemCount: value.allInvites.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return InvitesScreen(
-                              invitesBlueprint: value.allInvites[index],
-                            );
-                          }));
-                        },
-                        child: inviteView(value.allInvites[index]));
-                  },
-                )
-              : CircularProgressIndicator();
-        },
-      ),
+      body: tabs[selectedIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showBottomSheet(context, temporaryInvite, titC, desC);
         },
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.watch), label: 'Attending'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        currentIndex: selectedIndex,
+      ),
+    );
+  }
+}
+
+class HomeWidget extends StatelessWidget {
+  const HomeWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<Authentication>(
+      builder: (context, value, child) {
+        // print(value.allInvites);
+
+        return value.allInvites != []
+            ? ListView.builder(
+                itemCount: value.allInvites.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return InvitesScreen(
+                            invitesBlueprint: value.allInvites[index],
+                          );
+                        }));
+                      },
+                      child: showInvitesAttended(value.allInvites[index]));
+                },
+              )
+            : CircularProgressIndicator();
+      },
     );
   }
 }
@@ -186,10 +214,11 @@ void _showBottomSheet(BuildContext context, TemporaryInvite temporaryInvite,
       });
 }
 
-Widget inviteView(InvitesBlueprint ivB) {
+Widget inviteView(InvitesBlueprint ivB, var screenSize) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
     child: Container(
+      // height: 300,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.red, width: 2),
         borderRadius: BorderRadius.circular(5),
@@ -202,7 +231,9 @@ Widget inviteView(InvitesBlueprint ivB) {
                   BoxDecoration(borderRadius: BorderRadius.circular(200)),
               child: Image.network(
                 ivB.imageURL,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
+                height: 300,
+                width: screenSize.width,
               ),
             )),
         Container(

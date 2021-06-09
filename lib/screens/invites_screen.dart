@@ -41,7 +41,7 @@ class InvitesScreen extends StatelessWidget {
                 children: [
                   Text(invitesBlueprint.nameOfInviter),
                   Hero(
-                      tag: 'tag',
+                      tag: 'image',
                       child: Image.network(invitesBlueprint.imageURL)),
                   Text(
                     invitesBlueprint.title,

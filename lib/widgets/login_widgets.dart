@@ -82,23 +82,20 @@ import 'package:provider/provider.dart';
 //   }
 // }
 
-TextButton customButtonStyle(String text, var onPress) {
-  return TextButton(
-    onPressed: onPress,
-    child: Container(
-      // width: 150,
-      // height: 40,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        gradient: LinearGradient(colors: [Colors.red, Colors.cyan]),
-      ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            text,
-            style: TextStyle(color: kTextColor, fontSize: 20),
-          ),
+Container customButtonStyle(String text) {
+  return Container(
+    // width: 150,
+    // height: 40,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(50),
+      gradient: LinearGradient(colors: [Colors.red, Colors.cyan]),
+    ),
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          text,
+          style: TextStyle(color: kTextColor, fontSize: 20),
         ),
       ),
     ),
