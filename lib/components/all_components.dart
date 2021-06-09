@@ -2,6 +2,7 @@
 
 // import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class InvitesBlueprint {
@@ -49,7 +50,7 @@ class UserBlueprint {
   final String firstName;
   final String lastName;
   final bool isFemale;
-  late List<String> idsOfInviteAttended;
+  late List<DocumentReference> allInviteAttended;
   final DateTime dob;
   final int inviteAttendanceRate;
   final int peerReview;
@@ -66,7 +67,7 @@ class UserBlueprint {
       required this.inviteAttendanceRate,
       required this.peerReview,
       required this.dob,
-      required this.idsOfInviteAttended});
+      required this.allInviteAttended});
 
   Map<String, dynamic> toJson() {
     return {

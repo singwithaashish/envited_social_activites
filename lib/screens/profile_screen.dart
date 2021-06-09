@@ -1,5 +1,6 @@
 import 'package:envited/authentication/auth.dart';
 import 'package:envited/components/all_components.dart';
+import 'package:envited/screens/invites_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

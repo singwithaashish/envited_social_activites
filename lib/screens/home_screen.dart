@@ -26,7 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final TemporaryInvite temporaryInvite = new TemporaryInvite();
   int selectedIndex = 0;
-  final tabs = [HomeWidget(), ProfileScreen()];
+  final tabs = [
+    HomeWidget(),
+    AttendingScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +98,29 @@ class HomeWidget extends StatelessWidget {
                 },
               )
             : CircularProgressIndicator();
+      },
+    );
+  }
+}
+
+class AttendingScreen extends StatelessWidget {
+  const AttendingScreen({Key? key /*, required this.invitesBlueprint*/})
+      : super(key: key);
+  // final InvitesBlueprint invitesBlueprint;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Provider.of<Authentication>(context).allInvitesByUser(),
+      // initialData: Center(child: CircularProgressIndicator()),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: 1,
+                itemBuilder: (BuildContext context, int index) {
+                  return showInvitesAttended(snapshot.data);
+                },
+              )
+            : Center(child: CircularProgressIndicator());
       },
     );
   }

@@ -67,7 +67,11 @@ class LoginScreen extends StatelessWidget {
                     },
                     child: customButtonStyle('login fuck')),
                 TextButton(
-                    onPressed: () {}, child: customButtonStyle('Sign Up')),
+                    onPressed: () {
+                      Provider.of<Authentication>(context, listen: false)
+                          .signInWithGoogle();
+                    },
+                    child: customButtonStyle('Sign Up')),
               ],
             ),
 

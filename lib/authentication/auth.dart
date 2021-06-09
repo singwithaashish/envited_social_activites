@@ -1,5 +1,6 @@
 import 'dart:async';
 // import 'dart:html';
+// import 'dart:html';
 import 'dart:io';
 // import 'dart:html';
 
@@ -13,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:images_picker/images_picker.dart';
 
 class Authentication extends ChangeNotifier {
@@ -146,6 +148,18 @@ class Authentication extends ChangeNotifier {
     }
   }
 
+  void signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final gUser = await googleSignIn.signIn();
+    if (gUser == null) return;
+    final googleAuth = await gUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    await FirebaseAuth.instance.signInWithCredential(credential);
+    notifyListeners();
+  }
+
   void verifyEmail(String email) async {
     try {
       _email = email;
@@ -192,6 +206,30 @@ class Authentication extends ChangeNotifier {
       print(e);
     }
     notifyListeners();
+  }
+
+  Future<InvitesBlueprint?> allInvitesByUser() async {
+    print('DAT is BEIGN ');
+    DocumentSnapshot dat = await FirebaseFirestore.instance
+        .collection('AllUsers')
+        .doc('9m1qb7IZfISYsKTG9GLiZ8tRWHP2')
+        .get();
+    print("dat says : ${dat.get('idsOfInviteAttended')}");
+    try {
+      return new InvitesBlueprint(
+          title: dat.get('idsOfInviteAttended'),
+          time: dat.get('time'),
+          nameOfInviter: dat.get('nameOfInviter'),
+          location: dat.get('location'),
+          shortDescription: dat.get('shortDescription'),
+          chatAndUsersCollection: dat.get('chatAndUsersCollection'),
+          uIDofInviter: dat.get('uIDofInviter'),
+          imageURL: dat.get('imageURL'),
+          isPrivate: false);
+    } catch (e) {
+      print(e);
+    }
+    return null;
   }
 
   Future<void> createNewUser(String email, String password, String firstName,
